@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#17132f" />
+<title>Vòng Quay Tri Thức — Ôn tập Toán 10 (bản sửa đăng nhập)</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-brand"><div class="brand-mark">∑</div><div><div class="brand-title">VÒNG QUAY TRI THỨC</div><div class="brand-sub">Ôn tập Toán 10 · Hệ thức lượng trong tam giác</div></div></div>
+    <div class="eyebrow" style="color:#7755ed">HỌC ĐÚNG PHẦN · SỬA ĐÚNG LỖI</div>
+    <h1>Bắt đầu lượt ôn tập của bạn.</h1>
+    <p>Nhập mã học sinh để hệ thống lưu kết quả theo từng chủ đề và gợi ý luyện lại những dạng bài còn sai.</p>
+    <form id="loginForm" novalidate>
+      <label class="field-label" for="studentCode">Mã học sinh</label>
+      <input id="studentCode" class="code-input" name="studentCode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Nhập đúng 6 chữ số" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-describedby="loginError" title="Mã học sinh gồm đúng 6 chữ số" />
+      <div id="loginError" class="login-error" aria-live="polite"></div>
+      <button id="loginButton" type="submit" class="primary-btn">Vào vòng quay <span aria-hidden="true">→</span></button>
+    </form>
+    <div class="privacy-note"><span>🔒</span><span>Bản thử nghiệm lưu mã học sinh và tiến độ ngay trên trình duyệt của thiết bị này, không gửi dữ liệu lên máy chủ.</span></div>
+  </div>
+</section>
+
+<div id="mainApp" class="hidden">
+  <div class="page">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">∑</div><div><div class="brand-title">VÒNG QUAY TRI THỨC</div><div class="brand-sub">HỆ THỐNG ÔN TẬP TOÁN 10 THÍCH ỨNG THEO LỖI SAI</div></div></div>
+      <div class="top-actions"><span id="codeChip" class="code-chip">Mã HS: —</span><button id="changeStudentBtn" class="ghost-btn" type="button">Đổi mã</button></div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">CHỦ ĐỀ HỆ THỨC LƯỢNG TRONG TAM GIÁC</div>
+      <h1>Quay một chủ đề.<br/>Vững thêm một bước Toán.</h1>
+      <p>Mỗi lượt gồm 30 câu hỏi theo đúng tài liệu Word, kèm đáp án và lời giải cho từng câu.</p>
+      <div class="hero-tags"><span>✦ 4 chủ đề</span><span>✦ 30 câu mỗi lượt</span><span>✦ Chấm điểm tự động</span><span>✦ Luyện tập theo lỗi sai</span></div>
+    </section>
+
+    <section class="stats-grid" aria-label="Thống kê tổng quan">
+      <div class="stat-card"><div class="stat-top"><span>Số câu đã làm</span><span class="stat-icon">✎</span></div><div id="statAnswered" class="stat-value">0</div><div class="stat-foot">Bao gồm câu luyện lại</div></div>
+      <div class="stat-card"><div class="stat-top"><span>Tỉ lệ trả lời đúng</span><span class="stat-icon" style="background:#e8fbf5">✓</span></div><div id="statAccuracy" class="stat-value">—</div><div class="stat-foot">Tính trên toàn bộ câu đã làm</div></div>
+      <div class="stat-card"><div class="stat-top"><span>Lượt làm bài</span><span class="stat-icon" style="background:#fff3e4">↻</span></div><div id="statSessions" class="stat-value">0</div><div class="stat-foot">Các lượt đã nộp bài</div></div>
+      <div class="stat-card"><div class="stat-top"><span>Chủ đề cần ôn</span><span class="stat-icon" style="background:#ffeaf1">◎</span></div><div id="statWeak" class="stat-value" style="font-size:1.1rem">Chưa có</div><div class="stat-foot">Dựa trên lịch sử trả lời</div></div>
+    </section>
+
+    <section id="dashboardView">
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-head"><div><h2>🎡 Vòng quay chủ đề</h2><p class="panel-sub">Chủ đề sai nhiều hoặc lâu chưa ôn có cơ hội được ưu tiên.</p></div><span class="pill">BẮT ĐẦU</span></div>
+          <div class="wheel-wrap"><div class="wheel-pointer"></div><canvas id="wheelCanvas" class="wheel-canvas" width="700" height="700" aria-label="Vòng quay chọn chủ đề"></canvas><button id="spinBtn" class="wheel-center" type="button" aria-label="Quay vòng quay"><b>QUAY</b><span>CHỦ ĐỀ</span></button></div>
+          <div id="wheelStatus" class="wheel-status" aria-live="polite">Sẵn sàng chưa? Hãy quay nhé!</div>
+          <p class="spin-hint">Mỗi lượt quay sẽ mở một bộ 30 câu hỏi của chủ đề được chọn.</p>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h2>📚 Bốn vùng kiến thức</h2><p class="panel-sub">Theo dõi kết quả và mức độ vững ở từng phần.</p></div><span class="pill">TOÁN 10</span></div>
+          <div id="topicList" class="topic-list"></div>
+          <div class="recommendation"><div class="recommendation-icon">✦</div><div><strong id="recommendTitle">Gợi ý ôn tập</strong><p id="recommendText">Hãy hoàn thành lượt đầu tiên để hệ thống nhận diện dạng bài cần củng cố.</p></div></div>
+        </div>
+      </div>
+      <section class="panel history-panel">
+        <div class="panel-head"><div><h2>📈 Tiến trình theo lượt nộp</h2><p class="panel-sub">Theo dõi điểm từng lượt làm bài đã lưu trên trình duyệt này.</p></div><span id="historyCount" class="pill">0 lượt</span></div>
+        <canvas id="progressChart" class="progress-chart" width="900" height="240" aria-label="Biểu đồ điểm các lượt làm bài"></canvas>
+        <div id="historyList" class="history-list"></div>
+        <p class="small muted" style="margin:12px 0 0">Biểu đồ chỉ thể hiện các lượt đã nộp trên thiết bị hiện tại; lượt luyện lại cũng được ghi nhận.</p>
+      </section>
+      <div class="how-section">
+        <div class="how-item"><div class="how-num">1</div><div><strong>Quay chủ đề</strong><p>Vòng quay chọn một trong bốn phần; hệ thống ưu tiên nhẹ theo lịch sử lỗi sai.</p></div></div>
+        <div class="how-item"><div class="how-num">2</div><div><strong>Làm 30 câu và nộp bài</strong><p>Chọn đáp án, xem phản hồi và lời giải; câu bỏ trống cũng được tính là chưa đúng.</p></div></div>
+        <div class="how-item"><div class="how-num">3</div><div><strong>Làm câu tương tự với số liệu mới</strong><p>Nhận câu đã làm sai để xem lại đáp án và lời giải trong tài liệu.</p></div></div>
+      </div>
+      <div class="footnote">Phiên bản chạy thử trên trình duyệt · 120 câu hỏi và đáp án được lấy từ tài liệu Word bạn cung cấp.</div>
+    </section>
+
+    <section id="quizView" class="hidden">
+      <div class="quiz-top"><div><div class="eyebrow" style="color:#7857ee">BÀI ÔN TẬP</div><h1 id="quizTitle">Định lí côsin</h1><p id="quizDescription" class="muted" style="margin:0;font-size:.9rem">30 câu trắc nghiệm</p></div><div class="quiz-actions"><button id="backToDashboardBtn" class="ghost-btn" type="button">← Vòng quay</button></div></div>
+      <div class="quiz-progress-shell"><div class="quiz-progress-top"><span id="progressText">Đã trả lời 0/30 câu</span><span id="progressPercent">0%</span></div><div class="quiz-progress-bar"><span id="quizProgressFill"></span></div></div>
+      <div id="questionGrid" class="question-grid"></div>
+      <div class="quiz-footer"><div><strong id="footerCount">0/30 câu đã chọn</strong><div class="muted">Khi chọn sai, đáp án đúng và lời giải hiện ngay.</div></div><button id="submitBtn" class="primary-btn" type="button">Nộp bài & chấm điểm →</button></div>
+    </section>
+
+    <section id="resultView" class="hidden">
+      <div class="result-hero"><div class="eyebrow">KẾT QUẢ LUYỆN TẬP</div><h1 id="resultTitle">Bạn đã hoàn thành!</h1><p id="resultSub">Dưới đây là kết quả và các dạng bài nên ôn tiếp.</p><div class="score-line"><div class="score-circle"><span id="resultScore">0.0</span><small>/10 điểm</small></div><div class="score-details"><div class="score-detail"><b id="resultCorrect">0/30</b><span>Câu trả lời đúng</span></div><div class="score-detail"><b id="resultWrong">0</b><span>Câu cần luyện lại</span></div><div class="score-detail"><b id="resultPercent">0%</b><span>Tỉ lệ đúng</span></div></div></div></div>
+      <div class="result-layout"><div class="result-panel"><h2>🧩 Xem lại câu chưa đúng</h2><div id="wrongList" class="wrong-list"></div><div id="retryActions" class="result-actions"></div></div><div class="result-panel"><h2>📊 Tóm tắt lượt làm</h2><div id="resultSummary" class="result-summary-grid"></div><div style="margin-top:16px;padding:13px;border-radius:13px;background:#f8f6ff;color:#726a8d;font-size:.79rem">Mẹo học: hãy đọc lời giải, xác định công thức đã dùng và thử một câu tương tự. Điểm số được tính từ đáp án cuối cùng đã chọn; câu bỏ trống tính là sai.</div><div class="result-actions"><button id="resultDashboardBtn" class="primary-btn" type="button">Về vòng quay</button></div></div></div>
+    </section>
+  </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
